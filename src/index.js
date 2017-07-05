@@ -10,6 +10,13 @@ function Square(props) {
     );
 }
 
+function OrderBtn(props) {
+    return (
+        <button onClick={props.onClick}>
+            Order List
+        </button>
+    );
+}
 class Board extends React.Component {
     renderSquare(i) {
         return (
@@ -45,6 +52,7 @@ class Game extends React.Component {
             moveHistory: [],
             stepNumber: 0,
             xIsNext: true,
+            listIsReversed: false,
         };    
     }
 
@@ -67,6 +75,12 @@ class Game extends React.Component {
         });
     }
 
+    reverseList() {
+        this.setState({
+            listIsReversed: !this.state.listIsReversed, 
+        });
+    }
+
     jumpTo(step) {
         this.setState({
             stepNumber: step,
@@ -75,15 +89,23 @@ class Game extends React.Component {
     }
 
     render() {
-        const history = this.state.history;
-        const moveHistory = this.state.moveHistory;
+        const listIsReversed = this.state.listIsReversed;
+        const history = listIsReversed ? this.state.history.slice(0).reverse() : this.state.history;
+        const moveHistory = listIsReversed? this.state.moveHistory.slice(0).reverse() : this.state.moveHistory;
         const current = history[this.state.stepNumber];
         const winner = calculateWinner(current.squares);
 
         const moves = history.map((step, move) => {
-            const desc = move ?
-                'Position (' + getVectorString(moveHistory[move - 1]) + ')' :
-                'Game start';
+            let desc = null;
+            if (listIsReversed) {
+                desc = move === history.length - 1 ? 
+                    'Game start' : 
+                    'Position (' + getVectorString(moveHistory[move]) + ')';
+           } else {
+                desc = move ?
+                    'Position (' + getVectorString(moveHistory[move - 1]) + ')' :
+                    'Game start';
+            }
             let descWrapper = null
             if (move === this.state.stepNumber) {
                 descWrapper = <a href="#" onClick={() => this.jumpTo(move)}>
@@ -117,7 +139,13 @@ class Game extends React.Component {
                 </div>
                 <div className="game-info">
                     <div>{status}</div>
-                    <ol>{moves}</ol>
+                    <div>{moves}</div>
+                </div>
+                <div>
+                    <OrderBtn
+                        onClick={() => this.reverseList()}
+                    />
+                    {this.state.listIsReversed.toString()}
                 </div>
             </div>
         );
