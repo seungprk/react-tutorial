@@ -57,8 +57,15 @@ class Game extends React.Component {
     }
 
     handleClick(i) {
-        const history = this.state.history.slice(0, this.state.stepNumber + 1);
-        const moveHistory = this.state.moveHistory.slice(0, this.state.stepNumber);
+        const historyCutNum = this.state.listIsReversed ? 
+            this.state.history.length - this.state.stepNumber - 1 : 
+            this.state.stepNumber;
+        const nextStepNum = this.state.listIsReversed ? 
+            0 :
+            this.state.stepNumber + 1;
+
+        const history = this.state.history.slice(0, historyCutNum + 1);
+        const moveHistory = this.state.moveHistory.slice(0, historyCutNum);
         const current = history[history.length - 1];
         const squares = current.squares.slice();
         if (calculateWinner(squares) || squares[i]) {
@@ -70,7 +77,7 @@ class Game extends React.Component {
                 squares: squares
             }]),
             moveHistory: moveHistory.concat(i),
-            stepNumber: history.length,
+            stepNumber: nextStepNum,
             xIsNext: !this.state.xIsNext,     
         });
     }
@@ -78,13 +85,20 @@ class Game extends React.Component {
     reverseList() {
         this.setState({
             listIsReversed: !this.state.listIsReversed, 
+            stepNumber: this.state.history.length - this.state.stepNumber - 1,
         });
     }
 
     jumpTo(step) {
+        let nextX = null;
+        if (this.state.listIsReversed) {
+            nextX = (step % 2) ? true : false 
+        } else {
+            nextX = (step % 2) ? false : true
+        }
         this.setState({
             stepNumber: step,
-            xIsNext: (step % 2) ? false : true,
+            xIsNext: nextX,
         });
     }
 
@@ -145,8 +159,8 @@ class Game extends React.Component {
                     <OrderBtn
                         onClick={() => this.reverseList()}
                     />
-                    {this.state.listIsReversed.toString()}
                 </div>
+                {this.state.history.length}
             </div>
         );
     }
