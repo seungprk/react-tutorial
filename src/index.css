@@ -36,6 +36,9 @@ ol, ul {
     outline: none;
 }
 
+.highlight {
+    background: #fcae49;    
+}
 .kbd-navigation .square:focus {
     background: #ddd;
 }
