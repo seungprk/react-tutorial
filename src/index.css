@@ -3,8 +3,8 @@ body {
     margin: 20px;
 }
 
-ol, ul {
-    padding-left: 30px;
+li {
+    list-style-type: none;
 }
 
 .board-row:after {
@@ -45,9 +45,9 @@ ol, ul {
 
 .game {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
 }
 
 .game-info {
-    margin-left: 20px;
+    margin-top: 20px;
 }

@@ -13,7 +13,7 @@ function Square(props) {
 function OrderBtn(props) {
     return (
         <button onClick={props.onClick}>
-            Order List
+            Reverse List
         </button>
     );
 }
@@ -115,7 +115,9 @@ class Game extends React.Component {
         }
 
         // Deal with highlight
-        const current = this.state.history[step];
+        const adjStep = this.state.listIsReversed ? this.state.history.length - step - 1 : 
+            step;
+        const current = this.state.history[adjStep];
         const squares = current.squares.slice();
 
         let setWinningSquares = null;
@@ -149,13 +151,15 @@ class Game extends React.Component {
                     'Game start';
             }
             let descWrapper = null
+
+            const adjMove = this.state.listIsReversed ? history.length - move : move + 1
             if (move === this.state.stepNumber) {
                 descWrapper = <a href="#" onClick={() => this.jumpTo(move)}>
-                    <b>{desc}</b>
+                    <b>{adjMove + ". " + desc}</b>
                 </a>;
             } else {
                 descWrapper = <a href="#" onClick={() => this.jumpTo(move)}>
-                    {desc}
+                    {adjMove + ". " + desc}
                 </a>;
             }
             return (
@@ -164,6 +168,7 @@ class Game extends React.Component {
                 </li>
             ); 
         });
+
         let status;
         if (winner) {
             status = 'Winner: ' + winner;
@@ -173,7 +178,13 @@ class Game extends React.Component {
 
         return (
             <div className="game">
+                <div className="description">
+                    <h1>React-tac-toe</h1>
+                    <h4>By David Park</h4>
+                    <p>Simple tic-tac-toe game based on the tutorial from the official Facebook github repository.</p>
+                </div>
                 <div className="game-board">
+                    <div>{status}</div>
                     <Board 
                         squares={current.squares}
                         onClick={(i) => this.handleClick(i)}
@@ -181,13 +192,8 @@ class Game extends React.Component {
                     />
                 </div>
                 <div className="game-info">
-                    <div>{status}</div>
+                    <OrderBtn onClick={() => this.reverseList()} />
                     <div>{moves}</div>
-                </div>
-                <div>
-                    <OrderBtn
-                        onClick={() => this.reverseList()}
-                    />
                 </div>
             </div>
         );
